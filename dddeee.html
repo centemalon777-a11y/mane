@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upcoming Events - LearnHub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0ea5e9, #1e293b);
+      color: #fff;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    header { text-align: center; margin-bottom: 40px; }
+    header h1 { font-size: 2rem; color: #38bdf8; }
+
+    .events-container {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .event-card {
+      background: rgba(0,0,0,0.4);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    .event-date { font-size: 1rem; font-weight: 600; color: #0ea5e9; margin-bottom: 5px; }
+    .event-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; }
+    .event-desc { font-size: 0.95rem; color: #e2e8f0; margin-bottom: 15px; }
+
+    .register-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      background: #0ea5e9;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .register-btn:hover { background: #38bdf8; }
+    .register-btn.registered { background: #22c55e; cursor: default; }
+
+    /* Registration form inside event */
+    .register-form {
+      margin-top: 15px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .register-form input {
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      font-size: 0.95rem;
+    }
+    .confirm-btn {
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      background: #38bdf8;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .confirm-btn:hover { background: #0ea5e9; }
+
+    footer { text-align: center; margin-top: 40px; font-size: 0.9rem; color: #cbd5e1; }
+    .back-link {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 10px 20px;
+      background: #0ea5e9;
+      color: white;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+    .back-link:hover { background: #38bdf8; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>📅 Upcoming Events</h1>
+  <p>Choose the events you want to join and register</p>
+</header>
+
+<section class="events-container" id="events-list"></section>
+<a href="er.html" class="back-link">← Back to Dashboard</a>
+<footer>
+  <p>© 2025 LearnHub. All Rights Reserved.</p>
+</footer>
+
+<script>
+  // Example events
+  const events = [
+    { id: 1, date: "2025-10-05", title: "Science Fair", desc: "An exhibition showcasing student science projects." },
+    { id: 2, date: "2025-10-12", title: "Math Competition", desc: "Inter-school quiz competition on mathematics." },
+    { id: 3, date: "2025-10-20", title: "Cultural Day", desc: "A celebration of art, music, and cultural heritage." },
+    { id: 4, date: "2025-11-01", title: "First Term Exams", desc: "Examinations for all classes will begin." }
+  ];
+
+  // ✅ Get current logged-in student
+  const currentUser = localStorage.getItem("currentUser") || "guest";
+
+  // Load events for this user only
+  let registeredEvents = JSON.parse(localStorage.getItem("registeredEvents_" + currentUser)) || [];
+
+  const eventsList = document.getElementById("events-list");
+
+  function renderEvents() {
+    eventsList.innerHTML = "";
+    events.forEach(event => {
+      const div = document.createElement("div");
+      div.className = "event-card";
+
+      const registered = registeredEvents.find(e => e.id === event.id);
+
+      div.innerHTML = `
+        <div class="event-date">${new Date(event.date).toDateString()}</div>
+        <div class="event-title">${event.title}</div>
+        <div class="event-desc">${event.desc}</div>
+        <button class="register-btn ${registered ? "registered" : ""}">
+          ${registered ? "✅ Registered" : "Register"}
+        </button>
+        <div class="register-form">
+          <input type="text" placeholder="Enter your name" class="name-input">
+          <input type="text" placeholder="Enter your class" class="class-input">
+          <button class="confirm-btn">Confirm</button>
+        </div>
+      `;
+
+      const btn = div.querySelector(".register-btn");
+      const form = div.querySelector(".register-form");
+      const confirmBtn = div.querySelector(".confirm-btn");
+      const nameInput = div.querySelector(".name-input");
+      const classInput = div.querySelector(".class-input");
+
+      if (!registered) {
+        btn.addEventListener("click", () => {
+          form.style.display = "flex";
+        });
+
+        confirmBtn.addEventListener("click", () => {
+          const name = nameInput.value.trim();
+          const className = classInput.value.trim();
+          if (name && className) {
+            registeredEvents.push({ id: event.id, name, className });
+            localStorage.setItem("registeredEvents_" + currentUser, JSON.stringify(registeredEvents));
+            btn.textContent = "✅ Registered";
+            btn.classList.add("registered");
+            form.style.display = "none";
+            alert(`You are registered for ${event.title}!`);
+            renderEvents();
+          } else {
+            alert("Please enter your name and class.");
+          }
+        });
+      } else {
+        div.innerHTML += `<p style="margin-top:10px;color:#22c55e;">Registered as: <b>${registered.name}</b> (Class: ${registered.className})</p>`;
+      }
+
+      eventsList.appendChild(div);
+    });
+  }
+
+  renderEvents();
+</script>
+
+</body>
+</html>

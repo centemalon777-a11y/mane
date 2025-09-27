@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upcoming Events</title>
+<style>
+body { font-family: 'Poppins', sans-serif; background:#1e293b; color:white; padding:20px; }
+h1 { color:#38bdf8; text-align:center; }
+.events-container { max-width:800px; margin:20px auto; display:flex; flex-direction:column; gap:20px; }
+.event-card { background:rgba(0,0,0,0.4); padding:20px; border-radius:12px; }
+.register-btn { padding:10px 20px; background:#0ea5e9; border:none; border-radius:8px; cursor:pointer; color:white; }
+.register-btn.registered { background:#22c55e; cursor:default; }
+.register-form { display:none; flex-direction:column; gap:10px; margin-top:10px; }
+.register-form input { padding:8px; border-radius:6px; border:none; }
+.confirm-btn { padding:8px; border:none; border-radius:6px; background:#38bdf8; color:white; cursor:pointer; }
+</style>
+</head>
+<body>
+
+<h1>📅 Upcoming Events</h1>
+<div class="events-container" id="events-list"></div>
+
+<script>
+const currentUser = localStorage.getItem('currentUser') || 'guest';
+const events = [
+  { id:1, title:"Science Fair", desc:"Showcase science projects", date:"2025-10-05" },
+  { id:2, title:"Math Competition", desc:"Math quiz competition", date:"2025-10-12" },
+  { id:3, title:"Cultural Day", desc:"Art and music celebration", date:"2025-10-20" }
+];
+
+// Load this student's registrations only
+let registeredEvents = JSON.parse(localStorage.getItem('registeredEvents_' + currentUser)) || [];
+
+const eventsList = document.getElementById('events-list');
+
+function renderEvents() {
+  eventsList.innerHTML = '';
+  events.forEach(event => {
+    const div = document.createElement('div');
+    div.className = 'event-card';
+
+    const registered = registeredEvents.find(e => e.id === event.id);
+    div.innerHTML = `
+      <h3>${event.title}</h3>
+      <p>${event.desc}</p>
+      <p>Date: ${event.date}</p>
+      <button class="register-btn ${registered?'registered':''}">
+        ${registered?'✅ Registered':'Register'}
+      </button>
+      <div class="register-form">
+        <input type="text" placeholder="Your Name" class="name-input">
+        <input type="text" placeholder="Class" class="class-input">
+        <button class="confirm-btn">Confirm</button>
+      </div>
+      ${registered?`<p style="color:#22c55e;">Registered as: ${registered.name} (Class: ${registered.className})</p>`:''}
+    `;
+
+    const btn = div.querySelector('.register-btn');
+    const form = div.querySelector('.register-form');
+    const confirmBtn = div.querySelector('.confirm-btn');
+    const nameInput = div.querySelector('.name-input');
+    const classInput = div.querySelector('.class-input');
+
+    if(!registered){
+      btn.addEventListener('click', ()=>{ form.style.display='flex'; });
+      confirmBtn.addEventListener('click', ()=>{
+        const name = nameInput.value.trim();
+        const className = classInput.value.trim();
+        if(name && className){
+          registeredEvents.push({id:event.id, name, className});
+          localStorage.setItem('registeredEvents_' + currentUser, JSON.stringify(registeredEvents));
+          renderEvents();
+        } else {
+          alert("Enter your name and class.");
+        }
+      });
+    }
+
+    eventsList.appendChild(div);
+  });
+}
+
+renderEvents();
+</script>
+
+</body>
+</html>

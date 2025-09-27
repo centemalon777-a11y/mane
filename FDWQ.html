@@ -1,0 +1,171 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LearnHub - Homepage</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      font-family:'Poppins',sans-serif;
+      background:linear-gradient(135deg,#0ea5e9,#3f88aa);
+      color:#fff;
+    }
+    header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:15px 5%;
+      background:rgba(0,0,0,0.3);
+      flex-wrap:wrap; /* allow wrapping on small screens */
+    }
+    .logo{font-size:1.5rem;font-weight:700;color:#fff}
+    nav ul{
+      display:flex;
+      list-style:none;
+      gap:20px;
+      flex-wrap:wrap;
+      justify-content:center;
+    }
+    nav a{
+      text-decoration:none;
+      color:#fff;
+      font-weight:600;
+      transition:0.3s;
+    }
+    nav a:hover{color:#38bdf8}
+
+    .hero{
+      text-align:center;padding:80px 10% 40px;
+    }
+    .hero h1{font-size:2.5rem;margin-bottom:15px}
+    .hero p{font-size:1.1rem;margin-bottom:25px;max-width:600px;margin-left:auto;margin-right:auto}
+    .btn{
+      padding:12px 20px;border-radius:8px;border:none;
+      background:#0ea5e9;color:#fff;font-size:1rem;font-weight:600;
+      cursor:pointer;text-decoration:none;transition:0.3s;
+    }
+    .btn:hover{background:#38bdf8}
+
+    .sections{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+      gap:20px;
+      padding:50px 5%;
+    }
+    .card{
+      background:rgba(0,0,0,0.4);
+      padding:20px;
+      border-radius:14px;
+      text-align:center;
+      transition:0.3s;
+      box-shadow:0 6px 15px rgba(0,0,0,0.25);
+    }
+    .card:hover{transform:translateY(-6px)}
+    .card h3{margin-bottom:10px}
+    .card a{color:#38bdf8;text-decoration:none;font-weight:600}
+
+    footer{
+      text-align:center;
+      padding:20px;
+      background:rgba(0,0,0,0.4);
+      margin-top:40px;
+    }
+    #welcome-msg{
+      text-align:center;
+      font-size:2.4rem;
+      font-weight:600;
+      margin-top:20px;
+      color:whitesmoke;
+    }
+
+    /* Responsive fixes */
+    @media (max-width:768px){
+      header{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+      nav ul{
+        flex-direction:column;
+        gap:10px;
+        margin-top:10px;
+      }
+      .hero h1{font-size:2rem}
+      .hero p{font-size:1rem}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">📘 LearnHub</div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="ddes.html">Dashboard</a></li>
+                <li><a href="dfghjkl.html">Upcoming test</a></li>
+        <li><a href="DDDS.html">Study</a></li>
+        <li><a href="vvvv.html">Student Portal</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Personalized Welcome -->
+  <div id="welcome-msg"></div>
+
+  <section class="hero">
+    <h1>Welcome to LearnHub 🎓</h1>
+    <p>Your trusted platform for learning, connecting, and growing academically.</p>
+    <a href="DDDS.html" class="btn">Get Started</a>
+  </section>
+
+  <section class="sections">
+    <div class="card">
+      <h3>📚 Study</h3>
+      <p>Explore lessons and topics across different fields.</p>
+      <a href="DDDS.html">Go to Subjects →</a>
+    </div>
+    <div class="card">
+      <h3>💬 Student Records</h3>
+      <p>Join student discussions and share knowledge.</p>
+      <a href="portal.html">Open Records →</a>
+    </div>
+    <div class="card">
+      <h3>📖 Upcoming Events</h3>
+      <p>Stay updated with the latest events and activities.</p>
+      <a href="dfghjkl.html">View Events →</a>
+    </div>
+    <div class="card">
+      <h3>💡 Chat</h3>
+      <p>Talk with our chatbot for guidance and motivation.</p>
+      <a href="chat.html">Open Chat →</a>
+    </div>
+    <div class="card">
+      <h3>🛠 Tools</h3>
+      <p>Use study tools like calculator and reminders.</p>
+      <a href="sss.html">Open Tools →</a>
+    </div>
+    <div class="card">
+      <h3>🌐 Forum</h3>
+      <p>Join discussions and share knowledge.</p>
+      <a href="dasrgg.html">Open Forum →</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 LearnHub. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    // Show personalized greeting from localStorage
+    const currentUser = localStorage.getItem('currentUser');
+    const welcomeMsg = document.getElementById('welcome-msg');
+    if(currentUser){
+        const userData = JSON.parse(localStorage.getItem('user_' + currentUser));
+        if(userData) welcomeMsg.textContent = `Welcome back, ${userData.name}!`;
+    }
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Portal</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0ea5e9, #1e293b);
+      color: #fff;
+      padding: 20px;
+    }
+    h1 { text-align: center; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: rgba(0,0,0,0.6);
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,0.2);
+      text-align: center;
+    }
+    th {
+      background: #0ea5e9;
+    }
+    tr:nth-child(even) {
+      background: rgba(255,255,255,0.1);
+    }
+  </style>
+</head>
+<body>
+  <h1>📊 Student Quiz Records</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Topic</th>
+        <th>Score</th>
+        <th>Total</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody id="scoreTable"></tbody>
+  </table>
+
+<script>
+const tableBody = document.getElementById("scoreTable");
+const scores = JSON.parse(localStorage.getItem("quizScores")) || [];
+
+scores.forEach(s => {
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td>${s.name}</td>
+    <td>${s.topic}</td>
+    <td>${s.score}</td>
+    <td>${s.total}</td>
+    <td>${s.date}</td>
+  `;
+  tableBody.appendChild(row);
+});
+</script>
+</body>
+</html>

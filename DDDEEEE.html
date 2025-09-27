@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LearnHub — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg1:#0ea5e9; --bg2:#1e293b;
+  --card:#0f172a; --accent:#0ea5e9; --accent-2:#38bdf8;
+  --muted:#cbd5e1;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Poppins',sans-serif;
+  background: linear-gradient(135deg,var(--bg1),#8b5cf6);
+  color:#fff;
+  padding:18px;
+}
+.wrapper{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 380px;gap:20px;}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.brand h1{font-size:1.3rem;color:#fff}
+.card{background:rgba(15,23,42,0.9);border-radius:14px;padding:18px;box-shadow:0 12px 30px rgba(2,6,23,0.45);}
+.profile-top{display:flex;gap:16px;align-items:center}
+.avatar{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.4rem;color:#062026}
+.profile-info h2{font-size:1.1rem;margin-bottom:6px}
+.profile-info p{color:var(--muted);font-size:0.9rem;margin-bottom:8px}
+.button{padding:10px 12px;border-radius:10px;border:none;background:var(--accent);color:#012;cursor:pointer;font-weight:600}
+.button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.08);color:#fff}
+.leaderboard-list{display:flex;flex-direction:column;gap:8px}
+.leader {display:flex;justify-content:space-between;padding:8px;border-radius:8px;background:#07102288}
+.forum-list{display:flex;flex-direction:column;gap:10px;max-height:300px;overflow:auto;padding-right:6px}
+.post{background

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — LearnHub</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body {
+  font-family:'Poppins',sans-serif;
+  margin:0; padding:0;
+  background: linear-gradient(135deg,#0ea5e9,#1e293b);
+  color:#fff;
+}
+header {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:15px 20px; background:rgba(0,0,0,0.4);
+}
+header h1 { font-size:1.8rem; color:#38bdf8; }
+header button { padding:8px 12px; border:none; border-radius:8px; background:#22c55e; color:#fff; cursor:pointer; }
+
+.container { max-width:1000px; margin:30px auto; display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+
+.card { background:rgba(0,0,0,0.25); padding:20px; border-radius:12px; }
+
+.card h2 { margin-bottom:12px; color:#38bdf8; }
+
+table { width:100%; border-collapse: collapse; margin-top:10px; }
+th, td { padding:10px; border-bottom:1px solid rgba(255,255,255,0.2); text-align:left; }
+th { background: rgba(14,165,233,0.8); color:#fff; }
+td { background: rgba(0,0,0,0.2); }
+tr:hover td { background: rgba(14,165,233,0.3); }
+
+.message-area { max-height:400px; overflow:auto; margin-top:10px; }
+.msg { padding:10px 12px; border-radius:8px; margin-bottom:8px; }
+.msg.admin { background:#0ea5e9; text-align:left; }
+.msg.student { background:#22c55e; text-align:right; }
+.input-area { display:flex; gap:10px; margin-top:10px; }
+.input-area input { flex:1; padding:10px; border-radius:8px; border:none; }
+.input-area button { padding:10px 12px; border:none; border-radius:8px; background:#0ea5e9; color:#fff; cursor:pointer; }
+.input-area button:hover { background:#38bdf8; }
+
+select { padding:8px; border-radius:8px; border:none; margin-bottom:10px; background:rgba(255,255,255,0.1); color:#fff; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Admin Dashboard</h1>
+  <button id="logoutBtn">Logout</button>
+</header>
+
+<div class="container">
+
+  <!-- Registered Students -->
+  <div class="card">
+    <h2>Student Registrations</h2>
+    <table id="registrationTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Student Name</th>
+          <th>Subject</th>
+          <th>Registered At</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- Send Messages -->
+  <div class="card">
+    <h2>Send Message</h2>
+    <select id="studentSelect">
+      <option value="">Select Student</option>
+    </select>
+    <div class="message-area" id="messageArea"></div>
+    <div class="input-area">
+      <input type="text" id="messageInput" placeholder="Write a message">
+      <button id="sendMsgBtn">Send</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ===== Logout =====
+document.getElementById('logoutBtn').addEventListener('click', ()=>{
+  localStorage.removeItem('currentAdmin');
+  window.location.href='admin-login.html';
+});
+
+// ===== Load Registrations =====
+const registrationTableBody = document.querySelector('#registrationTable tbody');
+function loadRegistrations(){
+  const registrations = JSON.parse(localStorage.getItem('adminTestNotices') || '[]');
+  registrationTableBody.innerHTML = '';
+  registrations.sort((a,b)=>b.ts - a.ts).forEach((r,i)=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${i+1}</td><td>${r.student}</td><td>${r.subject}</td><td>${new Date(r.ts).toLocaleString()}</td>`;
+    registrationTableBody.appendChild(tr);
+  });
+  loadStudentOptions(registrations);
+}
+loadRegistrations();
+
+// ===== Populate student select =====
+const studentSelect = document.getElementById('studentSelect');
+function loadStudentOptions(registrations){
+  const uniqueStudents = [...new Set(registrations.map(r=>r.student))];
+  studentSelect.innerHTML = '<option value="">Select Student</option>';
+  uniqueStudents.forEach(s=>{
+    const opt = document.createElement('option');
+    opt.value = s;
+    opt.textContent = s;
+    studentSelect.appendChild(opt);
+  });
+}
+
+// ===== Messages =====
+const messageArea = document.getElementById('messageArea');
+const messageInput = document.getElementById('messageInput');
+const sendMsgBtn = document.getElementById('sendMsgBtn');
+
+function loadMessages(student){
+  const messages = JSON.parse(localStorage.getItem('messages_' + student) || '[]');
+  messageArea.innerHTML = '';
+  messages.forEach(m=>{
+    const div = document.createElement('div');
+    div.classList.add('msg', m.from==='Admin'?'admin':'student');
+    div.textContent = m.text;
+    messageArea.appendChild(div);
+  });
+  messageArea.scrollTop = messageArea.scrollHeight;
+}
+
+studentSelect.addEventListener('change', ()=>{
+  const student = studentSelect.value;
+  if(student) loadMessages(student);
+  else messageArea.innerHTML='';
+});
+
+// Send message
+sendMsgBtn.addEventListener('click', ()=>{
+  const student = studentSelect.value;
+  const text = messageInput.value.trim();
+  if(!student){ alert('Select a student'); return; }
+  if(!text){ alert('Write a message'); return; }
+
+  const messages = JSON.parse(localStorage.getItem('messages_' + student) || '[]');
+  messages.push({from:'Admin', text, ts:Date.now()});
+  localStorage.setItem('messages_' + student, JSON.stringify(messages));
+  messageInput.value='';
+  loadMessages(student);
+});
+</script>
+
+</body>
+</html>

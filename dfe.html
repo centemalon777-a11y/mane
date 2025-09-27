@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upcoming Tests - LearnHub</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body{
+  font-family:'Poppins',sans-serif;
+  background: linear-gradient(135deg,#0ea5e9,#1e293b);
+  color:#fff;
+  margin:0;
+  padding:20px;
+}
+header{
+  text-align:center;
+  margin-bottom:30px;
+}
+header h1{font-size:2rem;color:#38bdf8;}
+.tests-container{
+  max-width:800px;
+  margin:0 auto;
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+}
+.test-card{
+  background: rgba(0,0,0,0.4);
+  padding:20px;
+  border-radius:12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  box-shadow:0 5px 15px rgba(0,0,0,0.3);
+}
+.test-info h2{margin-bottom:6px;}
+.test-info p{color:#cbd5e1;margin-bottom:8px;}
+.register-btn{
+  padding:10px 18px;
+  border:none;
+  border-radius:8px;
+  background:#0ea5e9;
+  font-weight:600;
+  color:#fff;
+  cursor:pointer;
+  transition:0.3s;
+}
+.register-btn:hover{background:#38bdf8;}
+.register-btn.registered{background:#22c55e;cursor:default;}
+.back-link{
+  display:inline-block;
+  margin-top:30px;
+  padding:10px 20px;
+  background:#0ea5e9;
+  color:#fff;
+  border-radius:8px;
+  text-decoration:none;
+  font-weight:600;
+}
+.back-link:hover{background:#38bdf8;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📚 Upcoming Tests</h1>
+  <p>Register for tests you want to attend</p>
+</header>
+
+<div class="tests-container" id="testsList"></div>
+
+<a href="dashboard.html" class="back-link">← Back to Dashboard</a>
+
+<script>
+// Get current logged-in student
+const currentUser = localStorage.getItem('currentUser') || 'guest';
+
+// Example tests data
+const tests = [
+  {id:1, name:"Math Test", date:"2025-10-10", desc:"Algebra and Geometry questions."},
+  {id:2, name:"Science Test", date:"2025-10-15", desc:"Physics and Chemistry topics."},
+  {id:3, name:"English Test", date:"2025-10-20", desc:"Grammar and comprehension."},
+  {id:4, name:"History Test", date:"2025-10-25", desc:"World History overview."}
+];
+
+// Load registered tests for this student
+let registeredTests = JSON.parse(localStorage.getItem("registeredTests_" + currentUser)) || [];
+
+const testsList = document.getElementById('testsList');
+
+function renderTests(){
+  testsList.innerHTML='';
+  tests.forEach(test=>{
+    const div = document.createElement('div');
+    div.className='test-card';
+
+    const isRegistered = registeredTests.find(t=>t.id===test.id);
+
+    div.innerHTML=`
+      <div class="test-info">
+        <h2>${test.name}</h2>
+        <p>${test.desc}</p>
+        <small>Date: ${new Date(test.date).toDateString()}</small>
+      </div>
+    `;
+
+    const btn = document.createElement('button');
+    btn.className='register-btn';
+    btn.textContent = isRegistered ? "✅ Registered" : "Register";
+    if(isRegistered) btn.classList.add('registered');
+    btn.disabled = !!isRegistered;
+
+    btn.addEventListener('click', ()=>{
+      registeredTests.push({id:test.id, name:test.name, date:test.date});
+      localStorage.setItem("registeredTests_" + currentUser, JSON.stringify(registeredTests));
+      renderTests();
+      alert(`You are registered for ${test.name}!`);
+    });
+
+    div.appendChild(btn);
+    testsList.appendChild(div);
+  });
+}
+
+renderTests();
+</script>
+
+</body>
+</html>

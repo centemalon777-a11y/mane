@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Website Chatbot</title>
+<style>
+body{font-family:Poppins,sans-serif;background:#f0f0f0;margin:0;padding:20px;}
+/* Chatbot Button */
+#chatbotBtn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background:#0ea5e9;
+  color:#fff;
+  border:none;
+  border-radius:50%;
+  width:60px;
+  height:60px;
+  font-size:28px;
+  cursor:pointer;
+  z-index:1000;
+}
+
+/* Chat Window */
+#chatWindow {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  width: 300px;
+  max-height:400px;
+  background:#1e293b;
+  color:#fff;
+  border-radius:10px;
+  box-shadow:0 5px 20px rgba(0,0,0,0.3);
+  display:none;
+  flex-direction: column;
+  overflow:hidden;
+  z-index:1000;
+}
+
+#chatHeader {
+  background:#0ea5e9;
+  padding:10px;
+  text-align:center;
+  font-weight:bold;
+}
+
+#chatMessages {
+  flex:1;
+  padding:10px;
+  overflow-y:auto;
+}
+
+.message {
+  margin-bottom:10px;
+  padding:6px 10px;
+  border-radius:8px;
+  max-width:80%;
+}
+
+.bot{background:#38bdf8;color:#000;align-self:flex-start;}
+.user{background:#22c55e;color:#fff;align-self:flex-end;text-align:right;}
+
+#chatInputArea {
+  display:flex;
+  border-top:1px solid #ccc;
+}
+
+#chatInput {
+  flex:1;
+  padding:8px;
+  border:none;
+  border-radius:0;
+  outline:none;
+}
+
+#sendBtn {
+  padding:8px 12px;
+  background:#0ea5e9;
+  border:none;
+  color:#fff;
+  cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<button id="chatbotBtn">💬</button>
+
+<div id="chatWindow">
+  <div id="chatHeader">LearnHub Bot</div>
+  <div id="chatMessages"></div>
+  <div id="chatInputArea">
+    <input type="text" id="chatInput" placeholder="Type a command...">
+    <button id="sendBtn">Send</button>
+  </div>
+</div>
+
+<script>
+const chatbotBtn = document.getElementById('chatbotBtn');
+const chatWindow = document.getElementById('chatWindow');
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+const sendBtn = document.getElementById('sendBtn');
+
+chatbotBtn.addEventListener('click', ()=>{
+  chatWindow.style.display = chatWindow.style.display==='flex'?'none':'flex';
+});
+
+// Add message to chat
+function addMessage(text, sender){
+  const div = document.createElement('div');
+  div.className='message '+sender;
+  div.textContent=text;
+  chatMessages.appendChild(div);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Bot response logic
+function botResponse(input){
+  input = input.toLowerCase();
+  if(input.includes('events')) return 'You can view upcoming events here: [Go to Events](/student-dashboard.html#eventsSection)';
+  if(input.includes('messages')) return 'Check your messages here: [Messages](/student-dashboard.html#messagesSection)';
+  if(input.includes('leaderboard')) return 'View the leaderboard here: [Leaderboard](/student-dashboard.html#leaderboardSection)';
+  if(input.includes('forum')) return 'Join the forum discussions here: [Forum](/student-dashboard.html#forumSection)';
+  if(input.includes('help')) return 'Try typing: events, messages, leaderboard, forum.';
+  return 'I am not sure about that. Type "help" for guidance.';
+}
+
+// Send message
+function sendMessage(){
+  const text = chatInput.value.trim();
+  if(!text) return;
+  addMessage(text,'user');
+  chatInput.value='';
+  setTimeout(()=>addMessage(botResponse(text),'bot'),500);
+}
+
+sendBtn.addEventListener('click', sendMessage);
+chatInput.addEventListener('keypress', (e)=>{
+  if(e.key==='Enter') sendMessage();
+});
+
+// Welcome message
+addMessage('Hello! I am your LearnHub assistant. Type "help" to see options.','bot');
+</script>
+</body>
+</html>
